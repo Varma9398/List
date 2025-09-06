@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaunchPad - Platform Directory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #faf7ff 0%, #f0f8ff 50%, #fff0f5 100%);
+            color: #4a5568;
+            line-height: 1.6;
+            min-height: 100vh;
+            font-weight: 400;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 16px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 3.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 24px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(31, 38, 135, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #64748b;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+        }
+
+        .tab.active {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(31, 38, 135, 0.2);
+        }
+
+        .tab.active.platforms {
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+        }
+
+        .tab.active.hackathons {
+            background: linear-gradient(135deg, #ffd3a5 0%, #ffeaa7 100%);
+        }
+
+        .tab.active.funding {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ffaaa5 100%);
+        }
+
+        .tab.active.communities {
+            background: linear-gradient(135deg, #c7a2ff 0%, #b19cd9 100%);
+        }
+
+        .tab.active.tooling {
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+        }
+
+        .tab.active.showcase {
+            background: linear-gradient(135deg, #ffa8e5 0%, #ff8cc8 100%);
+        }
+
+        .tab.active.jobs {
+            background: linear-gradient(135deg, #92fe9d 0%, #00c9ff 100%);
+        }
+
+        .tab.active.content {
+            background: linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%);
+        }
+
+        .tab.active.learning {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .tab-count {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            padding: 24px 28px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .platforms-section .section-header {
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+        }
+
+        .hackathons-section .section-header {
+            background: linear-gradient(135deg, #ffd3a5 0%, #ffeaa7 100%);
+        }
+
+        .funding-section .section-header {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ffaaa5 100%);
+        }
+
+        .communities-section .section-header {
+            background: linear-gradient(135deg, #c7a2ff 0%, #b19cd9 100%);
+        }
+
+        .tooling-section .section-header {
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+        }
+
+        .showcase-section .section-header {
+            background: linear-gradient(135deg, #ffa8e5 0%, #ff8cc8 100%);
+        }
+
+        .jobs-section .section-header {
+            background: linear-gradient(135deg, #92fe9d 0%, #00c9ff 100%);
+        }
+
+        .content-section .content-header {
+            background: linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%);
+        }
+
+        .learning-section .section-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .emoji {
+            font-size: 1.2rem;
+        }
+
+        .count {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: rgba(248, 250, 252, 0.8);
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 500;
+            border: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #64748b;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(248, 250, 252, 0.6);
+        }
+
+        td {
+            padding: 20px 24px;
+            border: none;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+        }
+
+        .platform-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .platform-url {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .platform-url:hover {
+            opacity: 1;
+            color: #4299e1;
+        }
+
+        .traffic {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 60px 40px;
+            color: #64748b;
+        }
+
+        .coming-soon .emoji {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .coming-soon h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .coming-soon p {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            h1 {
+                font-size: 2.4rem;
+                margin-bottom: 12px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 32px;
+            }
+            
+            .tabs {
+                gap: 6px;
+            }
+            
+            .tab {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .section-header {
+                padding: 20px 20px;
+                font-size: 1.2rem;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            td, thead th {
+                padding: 16px 16px;
+            }
+            
+            .platform-name {
+                font-size: 0.9rem;
+            }
+            
+            .platform-url {
+                font-size: 0.8rem;
+            }
+            
+            .stats {
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+                min-width: 100px;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LaunchPad</h1>
+        <p class="subtitle">Your complete startup ecosystem map</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="platformsCount">0</div>
+                <div class="stat-label">Platforms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hackathonsCount">0</div>
+                <div class="stat-label">Hackathons</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="fundingCount">0</div>
+                <div class="stat-label">Funding</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab platforms active" data-tab="platforms">
+                <span class="emoji">🚀</span>
+                <span>Platforms</span>
+                <span class="tab-count" id="platformsTabCount">0</span>
+            </div>
+            <div class="tab hackathons" data-tab="hackathons">
+                <span class="emoji">⚡</span>
+                <span>Hackathons</span>
+                <span class="tab-count" id="hackathonsTabCount">0</span>
+            </div>
+            <div class="tab funding" data-tab="funding">
+                <span class="emoji">💰</span>
+                <span>Funding</span>
+                <span class="tab-count" id="fundingTabCount">0</span>
+            </div>
+            <div class="tab communities" data-tab="communities">
+                <span class="emoji">👥</span>
+                <span>Communities</span>
+                <span class="tab-count" id="communitiesTabCount">0</span>
+            </div>
+            <div class="tab tooling" data-tab="tooling">
+                <span class="emoji">🛠️</span>
+                <span>Tooling</span>
+                <span class="tab-count" id="toolingTabCount">0</span>
+            </div>
+            <div class="tab showcase" data-tab="showcase">
+                <span class="emoji">🏆</span>
+                <span>Showcase</span>
+                <span class="tab-count" id="showcaseTabCount">0</span>
+            </div>
+            <div class="tab jobs" data-tab="jobs">
+                <span class="emoji">💼</span>
+                <span>Jobs</span>
+                <span class="tab-count" id="jobsTabCount">0</span>
+            </div>
+            <div class="tab content" data-tab="content">
+                <span class="emoji">📝</span>
+                <span>Content</span>
+                <span class="tab-count" id="contentTabCount">0</span>
+            </div>
+            <div class="tab learning" data-tab="learning">
+                <span class="emoji">📚</span>
+                <span>Learning</span>
+                <span class="tab-count" id="learningTabCount">0</span>
+            </div>
+        </div>
+
+        <div id="platformsSection" class="content-section platforms-section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">🚀</span>
+                    <span>Launch & Distribution Platforms</span>
+                </div>
+                <span class="count" id="platformsBadge">0</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Traffic</th>
+                    </tr>
+                </thead>
+                <tbody id="platformsBody"></tbody>
+            </table>
+        </div>
+
+        <div id="hackathonsSection" class="content-section hackathons-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">⚡</span>
+                    <span>Build & Test Hackathons</span>
+                </div>
+                <span class="count" id="hackathonsBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">⚡</span>
+                <h3>Coming Soon</h3>
+                <p>Hackathons for building and testing your ideas</p>
+            </div>
+        </div>
+
+        <div id="fundingSection" class="content-section funding-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">💰</span>
+                    <span>Funding & Grants</span>
+                </div>
+                <span class="count" id="fundingBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">💰</span>
+                <h3>Coming Soon</h3>
+                <p>Funding opportunities and grants to sustain your startup</p>
+            </div>
+        </div>
+
+        <div id="communitiesSection" class="content-section communities-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">👥</span>
+                    <span>Feedback & Support Communities</span>
+                </div>
+                <span class="count" id="communitiesBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">👥</span>
+                <h3>Coming Soon</h3>
+                <p>Communities for feedback and support</p>
+            </div>
+        </div>
+
+        <div id="toolingSection" class="content-section tooling-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">🛠️</span>
+                    <span>Infrastructure & Credits</span>
+                </div>
+                <span class="count" id="toolingBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">🛠️</span>
+                <h3>Coming Soon</h3>
+                <p>Tools, credits, and infrastructure for your startup</p>
+            </div>
+        </div>
+
+        <div id="showcaseSection" class="content-section showcase-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">🏆</span>
+                    <span>Showcase & Awards</span>
+                </div>
+                <span class="count" id="showcaseBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">🏆</span>
+                <h3>Coming Soon</h3>
+                <p>Showcase opportunities and awards for credibility</p>
+            </div>
+        </div>
+
+        <div id="jobsSection" class="content-section jobs-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">💼</span>
+                    <span>Jobs & Collaborations</span>
+                </div>
+                <span class="count" id="jobsBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">💼</span>
+                <h3>Coming Soon</h3>
+                <p>Job opportunities and cofounder connections</p>
+            </div>
+        </div>
+
+        <div id="contentSection" class="content-section content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">📝</span>
+                    <span>Content & Press</span>
+                </div>
+                <span class="count" id="contentBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">📝</span>
+                <h3>Coming Soon</h3>
+                <p>Content creation and press opportunities to amplify your startup</p>
+            </div>
+        </div>
+
+        <div id="learningSection" class="content-section learning-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="emoji">📚</span>
+                    <span>Learning & Templates</span>
+                </div>
+                <span class="count" id="learningBadge">0</span>
+            </div>
+            <div class="coming-soon">
+                <span class="emoji">📚</span>
+                <h3>Coming Soon</h3>
+                <p>Resources and templates to speed up your development</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure to support multiple categories
+        const data = {
+            platforms: [
+                ["hot100 → https://www.hot100.ai", "N/A"],
+                ["go-publicly.com → https://www.go-publicly.com", "7k"],
+                ["Reddit → https://www.reddit.com", "52.0M"],
+                ["TechCrunch → https://techcrunch.com", "12.0M"],
+                ["Product Hunt → https://www.producthunt.com", "8.5M"],
+                ["Hacker News → https://news.ycombinator.com", "4.2M"],
+                ["AngelList → https://angel.co", "2.8M"],
+                ["https://dessign.net/", ""],
+                ["Indie Hackers → https://indiehackers.com", "1.2M"],
+                ["AlternativeTo → https://alternativeto.net", "2.5M"],
+                ["Launched by Lovable → https://launched.lovable.app", "8K"],
+                ["StartupFA.me → https://startupfa.me", "15K"],
+                ["Dang AI → https://dang.ai", "25K"],
+                ["There's An AI For That → https://theresanaiforthat.com", "120K"],
+                ["BetaList → https://betalist.com", "180K"],
+                ["Twelve Tools → https://twelve.tools", "12K"],
+                ["Fazier → https://fazier.com", "18K"],
+                ["SaaSHub → https://www.saashub.com", "150K"],
+                ["Alternative.me → https://alternative.me", "32K"],
+                ["magicbox.tools → https://magicbox.tools", "N/A"],
+                ["SideProjectors → https://www.sideprojectors.com", "18K"],
+                ["Peerlist → https://peerlist.io", "45K"],
+                ["Startup Stash → https://startupstash.com", "85K"],
+                ["AiTools → https://aitools.inc", "20K"],
+                ["Uneed → https://www.uneed.best", "35K"],
+                ["Turbo0 → https://turbo0.com", "7K"],
+                ["Pitchwall → https://pitchwall.co", "4K"],
+                ["Future Tools → https://www.futuretools.io", "180K"],
+                ["PeerPush → https://peerpush.net", "1K"],
+                ["aiwith.me → https://aiwith.me", "N/A"],
+                ["TinyLaunch → https://www.tinylaun.ch", "10K"],
+                ["toolsfine → https://toolsfine.com", "100"],
+                ["DevHunt → https://devhunt.org", "28K"],
+                ["StartupBase → https://startupbase.io", "17K"],
+                ["Firsto → https://firsto.co", "100"],
+                ["MKDirs → https://free.mkdirs.com", "5K"],
+                ["MicroLaunch → https://microlaunch.net", "15K"],
+                ["Launching Next → https://www.launchingnext.com", "14K"],
+                ["Indie Deals → https://www.indie.deals", "20K"],
+                ["Tiny Startups → https://tinystartups.com", "22K"],
+                ["ProductBurst → https://productburst.com", "16K"],
+                ["MakerThrive → https://makerthrive.com", "15K"],
+                ["LeaksAPI → https://leaksapi.com", "13k"],
+                ["Open Alternative → https://openalternative.co", "25K"],
+                ["AI Directories → https://www.aidirectori.es", "100"],
+                ["Promote Project → https://www.promoteproject.com", "14K"],
+                ["IdeaKiln → https://ideakiln.com", "100"],
+                ["SoloPush → https://solopush.com", "12K"],
+                ["AiTools (fyi) → https://aitools.fyi", "4K"],
+                ["SteemHunt → https://steemhunt.com", "35K"],
+                ["findly.tools → https://findly.tools", "100"],
+                ["Open Launch → https://open-launch.com", "13K"],
+                ["Scoutforge → https://scoutforge.net", "9K"],
+                ["Resource.fyi → https://resource.fyi", "100"],
+                ["SubmitHunt → https://www.submithunt.com", "9K"],
+                ["RankYourAI → https://rankyourai.com", "8K"],
+                ["IndieHub → https://indiehub.best", "18K"],
+                ["LaunchIgniter → https://launchigniter.com", "100"],
+                ["Micro SaaS Examples → https://www.microsaasexamples.com", "100"],
+                ["New Startups → https://new-startups.com", "100"],
+                ["Startups.fm → https://startups.fm", "13K"],
+                ["Startups Lab → https://startupslab.site", "15K"],
+                ["ShipFast → https://shipfa.st", "100"],
+                ["Openhunts → https://openhunts.com", "100"],
+                ["startuplist.ing → https://startuplist.ing", "100"],
+                ["Huzzler → https://huzzler.so", "100"],
+                ["toolfolio → https://toolfolio.io", "8K"],
+                ["1000.tools → https://1000.tools", "100"],
+                ["SaasHunt → https://saashunt.best", "N/A"],
+                ["Made with Lovable → https://madewithlovable.com", "500"],
+                ["AffordHunt → https://www.affordhunt.com", "10K"],
+                ["startupfa.st → https://www.startupfa.st", "11K"],
+                ["ToolHub → https://toolhub.me", "N/A"],
+                ["Startups.fyi → https://startups.fyi", "12K"],
+                ["Super Launch → https://www.superlaun.ch", "16K"],
+                ["IndieHackerStacks → https://indiehackerstacks.com", "100"],
+                ["madewithbolt → https://madewithbolt.com", "100"],
+                ["Shipsquad → https://shipsquad.space", "100"],
+                ["AwesomeIndie → https://awesomeindie.com", "500"],
+                ["Daily Pings → https://dailypings.com", "100"],
+                ["FindYourSaaS → https://www.findyoursaas.com", "8K"],
+                ["eSideHustles → https://esidehustles.com", "22K"],
+                ["Saassy Board → https://saassy-board.com", "60K"],
+                ["MyStartupTool → https://mystartuptool.com", "500"],
+                ["Saaspa.ge → https://www.saaspa.ge", "10K"],
+                ["Proofstories - https://proofstories.io", "10K"]
+            ],
+            hackathons: [],
+            funding: [],
+            communities: [],
+            tooling: [],
+            showcase: [],
+            jobs: [],
+            content: [],
+            learning: []
+        };
+
+        function extractPlatformInfo(fullName) {
+            const parts = fullName.split(' → ');
+            const name = parts[0];
+            const url = parts[1] || fullName;
+            return { name, url };
+        }
+
+        function formatTraffic(traffic) {
+            if (!traffic || traffic === 'N/A' || traffic === '') return 'N/A';
+            return traffic;
+        }
+
+        function updateCounts() {
+            // Update individual category counts
+            Object.keys(data).forEach(category => {
+                const count = data[category].length;
+                const countElement = document.getElementById(category + 'Count');
+                const badgeElement = document.getElementById(category + 'Badge');
+                const tabCountElement = document.getElementById(category + 'TabCount');
+                
+                if (countElement) countElement.textContent = count;
+                if (badgeElement) badgeElement.textContent = count;
+                if (tabCountElement) tabCountElement.textContent = count;
+            });
+
+            // Update total count
+            const total = Object.values(data).reduce((sum, category) => sum + category.length, 0);
+            document.getElementById('totalCount').textContent = total;
+        }
+
+        function renderCategory(category) {
+            const tbody = document.getElementById(category + 'Body');
+            if (!tbody) return; // Skip if section doesn't have a table
+
+            tbody.innerHTML = ''; // Clear existing content
+            
+            data[category].forEach(item => {
+                const [fullName, traffic] = item;
+                const { name, url } = extractPlatformInfo(fullName);
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>
+                        <div class="platform-name">${name}</div>
+                        <a href="${url}" target="_blank" class="platform-url">${url}</a>
+                    </td>
+                    <td class="traffic">${formatTraffic(traffic)}</td>
+                `;
+            });
+        }
+
+        function renderAll() {
+            Object.keys(data).forEach(category => {
+                renderCategory(category);
+            });
+            updateCounts();
+        }
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.content-section');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+                    
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding section
+                    tab.classList.add('active');
+                    document.getElementById(targetTab + 'Section').classList.add('active');
+                });
+            });
+        }
+
+        // Initialize the application
+        renderAll();
+        setupTabs();
+
+        // Example of how to add new items dynamically (for future use)
+        function addItem(category, name, url, traffic = 'N/A') {
+            const fullName = `${name} → ${url}`;
+            data[category].push([fullName, traffic]);
+            renderCategory(category);
+            updateCounts();
+        }
+
+        // Example of how to remove items (for future use)
+        function removeItem(category, index) {
+            data[category].splice(index, 1);
+            renderCategory(category);
+            updateCounts();
+        }
+
+        // Make functions available globally for future use
+        window.LaunchPad = {
+            addItem,
+            removeItem,
+            data,
+            renderAll,
+            updateCounts
+        };
+    </script>
+</body>
+</html>
